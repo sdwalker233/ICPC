@@ -1,0 +1,22 @@
+#Folders
+/fzuoj
+/HDU/大一
+/Java
+/virtual judge
+/工程
+/其他
+/无聊
+/资料
+/作业
+
+#Compiler generated files
+*.exe
+*.o
+
+#test files
+*.txt
+*.in
+*.out
+
+#other
+*.xlsx

@@ -1,61 +1,69 @@
-#include<stdio.h>
-#include<string.h>
-int n,r,cost[1001],head[1001],sum[1001],now;
-bool visit[1001];
-struct node{
-	int next,w;
-}list[2001];
-
- void add_list(int x,int y)
- {
- 	int p=head[x];
- 	if(p==0){
- 		head[x]=now;
- 		list[now++].w=y;
- 		return;
- 	}
- 	while(list[p].next) p=list[p].next;
- 	list[p].next=now;
- 	list[now++].w=y;
- }
-
- int cal_sum(int x)
- {
- 	int p=head[x];
- 	while(p){
- 		if(!visit[p]){
- 			visit[p]=1;
- 			sum[x]+=cal_sum(p);
- 		}
- 		p=list[p].next;
- 	}
- 	return sum[x];
- }
-
- void run()
- {
- 	int i,x,y;
- 	now=1;
- 	memset(head,0,sizeof(head));
- 	memset(sum,0,sizeof(sum));
- 	memset(visit,0,sizeof(visit));
- 	for(i=1;i<n;i++) scanf("%d",&cost[i]);
- 	for(i=1;i<n;i++){
- 		scanf("%d%d",&x,&y);
- 		add_list(x,y);
- 		add_list(y,x);
- 	}
- 	for(i=1;i<now;i++)
- 		printf("%d %d\n",list[i].w,list[i].next);
- 	cal_sum(r);
- 	for(i=1;i<n;i++)
- 		printf("%d\n",sum[i]);
- }
-int main()
+#include <iostream>
+#include <cstdio>
+#include <cstring>
+#include <algorithm>
+#include <queue>
+#define MAXN 1010
+using namespace std;
+struct node
 {
-	while(scanf("%d%d",&n,&r)!=EOF){
-		run();
+	int p,mark;
+	double v;
+	node(int _p=0,double _v=0,int _mark=0)
+	{
+		p=_p;v=_v;mark=_mark;
 	}
- return 0;
+	friend bool operator<(const node& x,const node& y)
+	{
+		return x.v<y.v;
+	}
+};
+int n,r,v[MAXN],fa[MAXN],mark[MAXN],vis[MAXN],t[MAXN];
+
+int find(int x)
+{
+	if(vis[fa[x]]==0) return fa[x];
+	return fa[x]=find(fa[x]);
 }
 
+void fuck()
+{
+	int i,a,b,pre;
+	int ans=0;
+	node now;
+	priority_queue<node> q;
+	memset(mark,0,sizeof(mark));
+	memset(vis,0,sizeof(vis));
+	fa[r]=0;
+	for(i=1;i<=n;i++)
+		scanf("%d",&v[i]);
+	for(i=1;i<n;i++){
+		scanf("%d%d",&a,&b);
+		fa[b]=a;
+	}
+	for(i=1;i<=n;i++){
+		q.push(node(i,v[i],0));
+		t[i]=1;
+		ans+=v[i];
+	}
+	while(!q.empty()){
+		now=q.top();
+		q.pop();
+		if(now.p==r||now.mark<mark[now.p]) continue;
+		pre=find(now.p);
+		//printf(" %d\n",now.p);
+		ans+=v[now.p]*t[pre];
+		v[pre]+=v[now.p];
+		t[pre]+=t[now.p];
+		q.push(node(pre,(double)v[pre]/t[pre],++mark[pre]));
+		vis[now.p]=1;
+	}
+	printf("%d\n",ans);
+}
+
+int main()
+{
+	while(~scanf("%d%d",&n,&r)&&n&&r)
+		fuck();
+ return 0;
+}

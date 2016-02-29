@@ -22,3 +22,4 @@
 *.swp
 *.xlsx
 *.xls
+.DS_Store

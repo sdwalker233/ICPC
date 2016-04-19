@@ -55,8 +55,9 @@ bool merge(long long a1, long long n1, long long a2, long long n2, long long& a3
     n3 = n1*n2*d;  
     a3 = (c%n3+n3)%n3;  
     return true;  
-}  
-  
+}
+
+//求模线性方程组x=ai(mod ni),ni可以不互质
 long long CRT(long long a[], long long m[])
 {  
     long long a1=a[1],m1=m[1];
@@ -102,7 +103,7 @@ void fuck()
 	//for(i=1;i<=n;i++) printf("%d %d\n",m[i],a[i]);
 	long long ans=CRT(m,a);
 	if(ans==0){
-		ans=1;
+ans=1;
 		for(i=1;i<=n;i++)
 			ans=ans/gcd(ans,i)*i;
 	}

@@ -4,26 +4,16 @@
 #include <algorithm>
 #include <set>
 #include <map>
+#define fi first
+#define se second
 #define MAXN 1010
 using namespace std;
-struct node{
-	int a,b;
-	node(int _a=0,int _b=0){
-		a=_a,b=_b;
-	}
-	friend bool operator<(const node& x,const node& y){
-		if(x.a==y.a) return x.b<y.b;
-		return x.a<y.a;
-	}
-	friend bool operator==(const node& x,const node& y){
-		return x.a==y.a&&x.b==y.b;
-	}
-};
+typedef pair<int,int> PII;
 
 int n,m;
 int x[1010],sum0[1010],sum1[1010];
-set<node> st0,st1;
-set<node>::iterator it,it1;
+set<PII > st0,st1;
+set<PII >::iterator it,it1;
 map<int,int> mp0,mp1;
 
 bool gao()
@@ -32,10 +22,10 @@ bool gao()
 	map<int,int>::iterator it;
 	scanf("%d%d",&a,&b);
 	it=mp0.lower_bound(a);
-	if(b<it->second) return 0;
+	if(it==mp0.end()||b<it->se) return 0;
 	it=mp1.upper_bound(a);
 	--it;
-	if(b>it->second) return 0;
+	if(b>it->se) return 0;
 	return 1;
 }
 
@@ -55,28 +45,33 @@ void fuck()
 			a=sum0[j]-sum0[i-1];
 			b=sum1[j-1]-sum1[i-1];
 			//printf("  %d %d\n",a,b);
-			st0.insert(node(a,b));
+			st0.insert(PII(a,b));
 		}
 	}
 	for(i=1;i<=n/2;i++){
 		for(j=i;j<=n/2;j++){
 			a=sum0[j]-sum0[i];
 			b=sum1[j]-sum1[i-1];
-			st1.insert(node(a,b));
+			st1.insert(PII(a,b));
 		}
 	}
 	for(it=st0.begin();it!=st0.end();++it){
 		++it;it1=it;--it;
 		if(it1==st0.end()) break;
-		if(it->a==it1->a||(it->a<it1->a&&it->b>it1->b)){
+		if(it->fi==it1->fi){
 			st0.erase(it1);
+			--it;
+		}
+		else if(it->se>=it1->se){
+			st1.erase(it);
+			it=it1;
 			--it;
 		}
 	}
 	for(it=st1.begin();it!=st1.end();++it){
 		++it;it1=it;--it;
 		if(it1==st1.end()) break;
-		if(it->a==it1->a){
+		if(it->fi==it1->fi){
 			st1.erase(it);
 			it=it1;
 			--it;
@@ -84,16 +79,16 @@ void fuck()
 		}
 		if(it==st1.begin()) continue;
 		--it;it1=it;++it;
-		if(it->b<=it1->b){
+		if(it->se<=it1->se){
 			st1.erase(it);
 			it=it1;
 			--it;
 		}
 	}
 	for(it=st0.begin();it!=st0.end();++it)
-		mp0[it->a]=it->b;
+		mp0[it->fi]=it->se;
 	for(it=st1.begin();it!=st1.end();++it)
-		mp1[it->a]=it->b;
+		mp1[it->fi]=it->se;
 	/*for(it=mp0.begin();it!=mp0.end();++it){
 		printf(" %d %d\n",it->first,it->second);
 	}
